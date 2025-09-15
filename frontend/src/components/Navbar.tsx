@@ -9,6 +9,8 @@ function Navigation() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
+  const isGuest = !!user?.guest;
+  const isAuthed = !!user;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -32,21 +34,26 @@ function Navigation() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/">Home</Nav.Link>
-            <Nav.Link as={Link} to="/recipes">Recipes</Nav.Link>
-            <Nav.Link as={Link} to="/my-recipes">My Recipes</Nav.Link>
-            <Nav.Link as={Link} to="/saved-recipes">Saved</Nav.Link>
-            <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+            <Nav.Link as={Link} to="/recipes" style={{ opacity: !isAuthed ? 0.5 : 1, pointerEvents: !isAuthed ? 'none' as const : undefined }}>Recipes</Nav.Link>
+            <Nav.Link as={Link} to="/my-recipes" style={{ opacity: (!isAuthed || isGuest) ? 0.5 : 1, pointerEvents: (!isAuthed || isGuest) ? 'none' as const : undefined }}>My Recipes</Nav.Link>
+            <Nav.Link as={Link} to="/saved-recipes" style={{ opacity: (!isAuthed || isGuest) ? 0.5 : 1, pointerEvents: (!isAuthed || isGuest) ? 'none' as const : undefined }}>Saved</Nav.Link>
+            <Nav.Link as={Link} to="/profile" style={{ opacity: (!isAuthed || isGuest) ? 0.5 : 1, pointerEvents: (!isAuthed || isGuest) ? 'none' as const : undefined }}>Profile</Nav.Link>
+            {user && !isGuest && user.role === 'admin' && (
+              <Nav.Link as={Link} to="/admin">Admin</Nav.Link>
+            )}
           </Nav>
           <Nav className="ms-auto">
             {user ? (
-              <Button variant="outline-light" onClick={handleLogout}>
-                Logout
-              </Button>
+              isGuest ? (
+                <Link to="/login">
+                  <Button variant="outline-light">Login</Button>
+                </Link>
+              ) : (
+                <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+              )
             ) : (
               <Link to="/login">
-                <Button variant="outline-light">
-                  Login
-                </Button>
+                <Button variant="outline-light">Login</Button>
               </Link>
             )}
           </Nav>

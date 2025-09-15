@@ -8,10 +8,10 @@ import { useDispatch } from 'react-redux';
 
 function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,13 +20,23 @@ function Login() {
       dispatch(loginSuccess(data));
       navigate('/');
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+      setError('Invalid credentials. Please try again.');
+    }
+  };
+
+  const handleGuest = async () => {
+    try {
+      const { data } = await api.post('/auth/guest');
+      dispatch(loginSuccess(data));
+      navigate('/recipes');
+    } catch (err) {
+      setError('Failed to continue as guest.');
     }
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
-      <Card style={{ width: '100%', maxWidth: '400px' }}>
+    <Container className="auth-bg d-flex justify-content-center align-items-center">
+      <Card style={{ width: '100%', maxWidth: '400px' }} className="auth-card">
         <Card.Body>
           <h3 className="mb-4 text-center">Login 🍽️</h3>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -57,8 +67,11 @@ function Login() {
               Log In
             </Button>
           </Form>
+          <Button variant="secondary" onClick={handleGuest} className="w-100 mt-3">
+            Continue as Guest
+          </Button>
           <p className="mt-3 text-center">
-            Don't have an account? <Link to="/signup">Sign Up</Link>
+            Don't have an account? <Link to="/signup">Register</Link>
           </p>
         </Card.Body>
       </Card>

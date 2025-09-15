@@ -3,14 +3,16 @@ import { useState } from 'react';
 import { Container, Form, Button, Alert, Card } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { useDispatch } from 'react-redux';
 
 function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,10 +34,10 @@ function Signup() {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
-      <Card style={{ width: '100%', maxWidth: '400px' }}>
+    <Container className="auth-bg d-flex justify-content-center align-items-center">
+      <Card style={{ width: '100%', maxWidth: '400px' }} className="auth-card">
         <Card.Body>
-          <h3 className="mb-4 text-center">Sign Up 🍽️</h3>
+          <h3 className="mb-4 text-center">Register 🍽️</h3>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSignup}>
             <Form.Group className="mb-3">
